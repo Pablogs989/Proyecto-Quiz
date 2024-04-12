@@ -3,67 +3,58 @@ const nextButton = document.getElementById("next-btn");
 const questionContainerElement = document.getElementById("question-container");
 const questionElement = document.getElementById("question");
 const answerButtonsElement = document.getElementById("answer-buttons");
+const apiKey = 'KFGmOUvBmwkfPjrKCJZWTdlMVJbJSX0soimMSV5a';
+const limit = 10;
 
-const questions = [
-  {
-    question: "What is 2 + 2?",
-    answers: [
-      { text: "4", correct: true },
-      { text: "22", correct: false },
-    ],
-  },
-  {
-    question: "Is web development fun?",
-    answers: [
-      { text: "Kinda", correct: false },
-      { text: "YES!!!", correct: true },
-      { text: "Um no", correct: false },
-      { text: "IDK", correct: false },
-    ],
-  },
-  {
-    question: "What is 4 * 2?",
-    answers: [
-      { text: "6", correct: false },
-      { text: "8", correct: true },
-      { text: "Yes", correct: false },
-    ],
-  },
-];
+let questions = [];
+const getQuestions = () => {
+  questions = [];
+  axios.get(`https://quizapi.io/api/v1/questions?apiKey=${apiKey}&limit=${limit}`)
+    .then(res => {
+      questions = res.data;
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+getQuestions();
 
 let currentQuestionIndex;
 
-function startGame() {
+const startGame = () => {
   startButton.classList.add("hide");
   currentQuestionIndex = 0;
   questionContainerElement.classList.remove("hide");
   setNextQuestion();
 }
 
-function showQuestion(question) {
+const showQuestion = (question) => {
   questionElement.innerText = question.question;
-  question.answers.forEach((answer) => {
-    const button = document.createElement("button");
-    button.innerText = answer.text;
-
-    if (answer.correct) {
-      button.dataset.correct = true;
+  for (const answer in question.answers) {
+    if (question.answers[answer] != undefined) {
+      const button = document.createElement("button");
+      button.innerText = question.answers[answer];
+      console.log(question.correct_answers[answer+"_correct"]); 
+      if (question.correct_answers[answer+"_correct"]) {
+        button.dataset.correct = true;
+      }
+      button.addEventListener("click", selectAnswer);
+      answerButtonsElement.appendChild(button);
     }
-    button.addEventListener("click", selectAnswer);
-    answerButtonsElement.appendChild(button);
-  });
+  }
 }
-function resetState() {
+
+const resetState = () => {
   nextButton.classList.add("hide");
   answerButtonsElement.innerHTML = "";
 }
 
-function setNextQuestion() {
+const setNextQuestion = () => {
   resetState();
   showQuestion(questions[currentQuestionIndex]);
 }
 
-function setStatusClass(element) {
+const setStatusClass = (element) => {
   if (element.dataset.correct == "true") {
     element.classList.add("correct");
   } else {
@@ -71,7 +62,8 @@ function setStatusClass(element) {
   }
 }
 
-function selectAnswer() {
+
+const selectAnswer = () => {
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button);
   });
