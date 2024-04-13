@@ -10,22 +10,31 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="question-container" class="hide">
-      <div id="question">Question</div>
+      <div id="question" class="h3">Question</div>
 
-      <div id="answer-buttons"></div>
+      <div id="answer-buttons" class="d-grid gap-2"></div>
+    </div>
+    <div id="user-data" class="d-grid gap-2">
+      <input
+        type="text"
+        id="name"
+        class="form-control"
+        placeholder="Enter your name"
+      />
+      <input type="date" class="form-control" id="date" name="date" readonly />
     </div>
     <div class="controls">
       <button id="start-btn" class="btn btn-primary">Start</button>
-      <button id="next-btn" class="hide">Next</button>
+      <button id="next-btn" class="hide btn btn-primary">Next</button>
     </div>
     <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="main.js"></script>
