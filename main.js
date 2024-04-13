@@ -60,6 +60,7 @@ let currentQuestionIndex;
 const startGame = () => {
   startButton.classList.add("hide");
   currentQuestionIndex = 0;
+  marks = 0;
   questionContainerElement.classList.remove("hide");
   setNextQuestion();
 }
@@ -102,16 +103,22 @@ const setStatusClass = (element) => {
 }
 
 
-const selectAnswer = () => {
+const selectAnswer = (event) => {
+  const selectedButton = event.target;
+  if (selectedButton.dataset.correct) {
+    marks++;
+  }
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button);
   });
   if (filteredQuestions.length > currentQuestionIndex + 1) {
     nextButton.classList.remove("hide");
   } else {
-    console.log(marks);
     startButton.innerText = "Restart";
     startButton.classList.remove("hide");
+    answerButtonsElement.innerHTML = "";
+    questionElement.innerHTML = "";
+
   }
 }
 
