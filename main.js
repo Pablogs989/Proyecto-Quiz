@@ -5,6 +5,7 @@ const questionElement = document.getElementById("question");
 const answerButtonsElement = document.getElementById("answer-buttons");
 const nameElement = document.getElementById("name");
 const dateElement = document.getElementById("date");
+const chartElement = document.getElementById("chart");
 const apiKey = 'KFGmOUvBmwkfPjrKCJZWTdlMVJbJSX0soimMSV5a';
 const limit = 20;
 const date = new Date();
@@ -13,9 +14,44 @@ dateElement.value = formatedDate;
 
 let questions = [];
 let filteredQuestions = [];
-let marks = 0;
+let mark = 0;
 let currentQuestionIndex;
 let stats = JSON.parse(localStorage.getItem('stats')) || [];
+
+const setChart = () => {
+  let xValues = [];
+  let yValues = [];
+  stats.forEach(user => {
+    xValues.push(user.name);
+    yValues.push(user.mark);
+  });
+
+  new Chart("myChart", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: "grey",
+        data: yValues,
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Marks"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            max: 10,
+          }
+        }]
+      }
+    }
+  });
+}
 
 const filterQuestions = (questions) => {
   for (const question in questions) {
@@ -65,7 +101,7 @@ const createUser = () => {
   let user = {
     name: nameElement.value,
     date: formatedDate,
-    marks: marks
+    mark: mark
   }
   stats.push(user);
   localStorage.setItem("stats", JSON.stringify(stats));
@@ -75,8 +111,9 @@ const startGame = () => {
   startButton.classList.add("hide");
   nameElement.classList.add("hide");
   dateElement.classList.add("hide");
+  chartElement.classList.add("hide");
   currentQuestionIndex = 0;
-  marks = 0;
+  mark = 0;
   questionContainerElement.classList.remove("hide");
   setNextQuestion();
 }
@@ -121,7 +158,7 @@ const setStatusClass = (element) => {
 const selectAnswer = (event) => {
   const selectedButton = event.target;
   if (selectedButton.dataset.correct) {
-    marks++;
+    mark++;
   }
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button);
@@ -130,11 +167,13 @@ const selectAnswer = (event) => {
     nextButton.classList.remove("hide");
   } else {
     createUser();
+    setChart();
     setTimeout(() => {
       startButton.innerText = "Restart";
       startButton.classList.remove("hide");
       nameElement.classList.remove("hide");
       dateElement.classList.remove("hide");
+      chartElement.classList.remove("hide")
       answerButtonsElement.innerHTML = "";
       questionElement.innerHTML = "";
     }, 2000);
@@ -142,6 +181,7 @@ const selectAnswer = (event) => {
 }
 
 getQuestions();
+setChart();
 
 startButton.addEventListener("click", startGame);
 nextButton.addEventListener("click", () => {
