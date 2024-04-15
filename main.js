@@ -18,15 +18,50 @@ let mark = 0;
 let currentQuestionIndex;
 let stats = JSON.parse(localStorage.getItem('stats')) || [];
 
-const setChart = () => {
+const setChartMarks = () => {
   let xValues = [];
   let yValues = [];
   stats.forEach(user => {
     xValues.push(user.name);
     yValues.push(user.mark);
   });
-
   new Chart("myChart", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: "grey",
+        data: yValues,
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Marks"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            max: 10,
+          }
+        }]
+      }
+    }
+  });
+}
+
+const setChartUser = (userName) => {
+  let xValues = [];
+  let yValues = [];
+  stats.forEach(user => {
+    if (user.name == userName) {
+      xValues.push(user.name);
+      yValues.push(user.mark);
+    }
+  });
+  new Chart("myChartUser", {
     type: "bar",
     data: {
       labels: xValues,
@@ -167,7 +202,7 @@ const selectAnswer = (event) => {
     nextButton.classList.remove("hide");
   } else {
     createUser();
-    setChart();
+    setChartMarks();
     setTimeout(() => {
       startButton.innerText = "Restart";
       startButton.classList.remove("hide");
@@ -181,7 +216,8 @@ const selectAnswer = (event) => {
 }
 
 getQuestions();
-setChart();
+setChartMarks();
+setChartUser("Pablo");
 
 startButton.addEventListener("click", startGame);
 nextButton.addEventListener("click", () => {
