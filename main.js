@@ -57,7 +57,7 @@ const setChartUser = (userName) => {
   let yValues = [];
   stats.forEach(user => {
     if (user.name == userName) {
-      xValues.push(user.name);
+      xValues.push(user.date);
       yValues.push(user.mark);
     }
   });
@@ -74,7 +74,7 @@ const setChartUser = (userName) => {
       legend: { display: false },
       title: {
         display: true,
-        text: "Marks"
+        text: userName
       },
       scales: {
         yAxes: [{
@@ -217,7 +217,7 @@ const selectAnswer = (event) => {
 
 getQuestions();
 setChartMarks();
-setChartUser("Pablo");
+nameElement.addEventListener("change", () => setChartUser(nameElement.value));
 
 startButton.addEventListener("click", startGame);
 nextButton.addEventListener("click", () => {
