@@ -6,14 +6,13 @@ const answerButtonsElement = document.getElementById("answer-buttons");
 const nameElement = document.getElementById("name");
 const dateElement = document.getElementById("date");
 const chartElement = document.getElementById("chart");
-const apiKey = 'KFGmOUvBmwkfPjrKCJZWTdlMVJbJSX0soimMSV5a';
-const limit = 20;
+const url = 'https://restcountries.com/v3.1/all?fields=name,capital,cca2,flags'
 const date = new Date();
 const formatedDate = date.toISOString().split('T')[0];
 dateElement.value = formatedDate;
 
+let countriesData = [];
 let questions = [];
-let filteredQuestions = [];
 let mark = 0;
 let currentQuestionIndex;
 let stats = JSON.parse(localStorage.getItem('stats')) || [];
@@ -88,49 +87,37 @@ const setChartUser = (userName) => {
   });
 }
 
-const filterQuestions = (questions) => {
-  for (const question in questions) {
-    let aNumber = 0;
-    let correctAnswers = 0;
-    for (const answer in questions[question].answers) {
-      if (questions[question].answers[answer] != null) {
-        if (questions[question].correct_answers[answer + "_correct"] == "true") {
-          correctAnswers++;
-        }
-        aNumber++;
-      }
-    }
-    if (aNumber == 4 && filteredQuestions.length < 10 && correctAnswers == 1) {
-      filteredQuestions.push(questions[question]);
-    }
-  }
-}
 
 const apiAccess = () => {
-  axios.get(`https://quizapi.io/api/v1/questions?apiKey=${apiKey}&limit=${limit}`)
-    .then(res => {
-      questions = res.data;
-      filterQuestions(questions);
-      if (filteredQuestions.length < 10) {
-        axios.get(`https://quizapi.io/api/v1/questions?apiKey=${apiKey}&limit=${limit}`)
-          .then(res => {
-            questions = res.data;
-            filterQuestions(questions);
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      }
+  axios.get(url)
+    .then((response) => {
+      countriesData = response.data;
+      createQuestions();
     })
-    .catch(err => {
-      console.log(err)
-    })
+    .catch((error) => console.error(error));
 }
 
-const getQuestions = () => {
-  filteredQuestions = [];
-  apiAccess();
+const createQuestions = () => {
+  console.log(JSON.stringify(countriesData));
+  countriesData.forEach(countrie => {
+    let answers = [];
+    for (let i = 0; i < 3; i++) {
+      let randomIndex = Math.floor(Math.random() * countriesData.length);
+      answers.push(countriesData[randomIndex].flags.png);
+    }
+    answers.push(countrie.flags.png);
+    answers.sort(() => Math.random() - 0.5);
+    let question = {
+      question: countrie.name.common,
+      answers: answers,
+      correct_answer: countrie.flags.png,
+    };
+    questions.push(question);
+  });
+  questions.sort(() => Math.random() - 0.5);
+  questions = questions.slice(0, 10);
 }
+
 
 const createUser = () => {
   let user = {
@@ -157,15 +144,20 @@ const showQuestion = (question) => {
   questionElement.innerText = question.question;
   for (const answer in question.answers) {
     if (question.answers[answer] != undefined) {
-      const button = document.createElement("button");
-      button.classList.add("btn");
-      button.classList.add("btn-secondary");
-      button.innerText = question.answers[answer];
-      if (question.correct_answers[answer + "_correct"] == "true") {
-        button.dataset.correct = true;
+      const buttonImg = document.createElement("img");
+      const divContenedor = document.createElement('div');
+      divContenedor.classList.add("g-col-8");
+      buttonImg.classList.add("btn");
+      buttonImg.classList.add("btn-secondary");
+
+      buttonImg.src = question.answers[answer];
+      if (question.correct_answer == question.answers[answer]) {
+        buttonImg.dataset.correct = true;
       }
-      button.addEventListener("click", selectAnswer);
-      answerButtonsElement.appendChild(button);
+      divContenedor.appendChild(buttonImg);
+
+      buttonImg.addEventListener("click", selectAnswer);
+      answerButtonsElement.appendChild(divContenedor);
     }
   }
 }
@@ -177,7 +169,7 @@ const resetState = () => {
 
 const setNextQuestion = () => {
   resetState();
-  showQuestion(filteredQuestions[currentQuestionIndex]);
+  showQuestion(questions[currentQuestionIndex]);
 }
 
 const setStatusClass = (element) => {
@@ -196,9 +188,9 @@ const selectAnswer = (event) => {
     mark++;
   }
   Array.from(answerButtonsElement.children).forEach((button) => {
-    setStatusClass(button);
+    setStatusClass(button.children[0]);
   });
-  if (filteredQuestions.length > currentQuestionIndex + 1) {
+  if (questions.length > currentQuestionIndex + 1) {
     nextButton.classList.remove("hide");
   } else {
     createUser();
@@ -215,9 +207,10 @@ const selectAnswer = (event) => {
   }
 }
 
-getQuestions();
+apiAccess();
+createQuestions();
 setChartMarks();
-nameElement.addEventListener("change", () => setChartUser(nameElement.value));
+nameElement.addEventListener("keyup", () => setChartUser(nameElement.value));
 
 startButton.addEventListener("click", startGame);
 nextButton.addEventListener("click", () => {

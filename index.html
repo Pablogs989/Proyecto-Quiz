@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="question-container" class="hide">
-      <div id="question" class="h3">Question</div>
+    <div id="question-container" class="hide container-fluid">
+      <div id="question" class="">Question</div>
 
-      <div id="answer-buttons" class="d-grid gap-2"></div>
+      <div id="answer-buttons" class="grid text-center"></div>
     </div>
     <div id="user-data" class="d-grid gap-2">
       <input
@@ -24,6 +24,7 @@
         id="name"
         class="form-control"
         placeholder="Enter your name"
+        required
       />
       <input type="date" class="form-control" id="date" name="date" readonly />
     </div>
