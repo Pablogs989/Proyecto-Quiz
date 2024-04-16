@@ -4,44 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proyecto Quiz</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="question-container" class="hide container-fluid">
-      <div id="question" class="">Question</div>
 
-      <div id="answer-buttons" class="grid text-center"></div>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+  </head>
+  <body class="p-5">
+    <header class="d-flex justify-content-between">
+      <h1 class="text-center">Quiz App</h1>
+      <div class="d-flex flex-column">
+        <label id="date" class="form-label"></label>
+        <label id="user-label" class="form-label"></label>
+      </div>
+    </header>
+    <div id="question-container" class="d-none">
+      <div id="question" class="h3">Question</div>
+      <div
+        id="answer-buttons"
+        class="d-flex flex-wrap gap-5 justify-content-center m-3"
+      ></div>
+      <div id="progress-bar" class="progress">
+        <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
     </div>
-    <div id="user-data" class="d-grid gap-2">
+    <div id="user-data" class="d-flex d-grid gap-2 pt-3">
       <input
         type="text"
         id="name"
         class="form-control"
         placeholder="Enter your name"
-        required
       />
-      <input type="date" class="form-control" id="date" name="date" readonly />
+      <input
+        type="text"
+        id="search-name"
+        class="form-control d-none"
+        placeholder="Search user"
+      />
     </div>
+    <div id="alert-div"></div>
+    <ul id="end-game" class="list-group d-none">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      ></li>
+    </ul>
     <div class="controls">
       <button id="start-btn" class="btn btn-primary">Start</button>
-      <button id="next-btn" class="hide btn btn-primary">Next</button>
+      <button id="next-btn" class="d-none btn btn-primary">Next</button>
+      <button id="menu-btn" class="d-none btn btn-primary">Menu</button>
+      <button id="stats-btn" class="btn btn-primary">Stats</button>
+      <button id="search-btn" class="btn btn-primary d-none">Search</button>
     </div>
 
-    <div id="chart">
+    <div id="chart" class="chartDiv d-none">
       <canvas id="myChart"></canvas>
       <canvas id="myChartUser"></canvas>
     </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="main.js"></script>

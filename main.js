@@ -1,19 +1,31 @@
 const startButton = document.getElementById("start-btn");
 const nextButton = document.getElementById("next-btn");
+const menuButton = document.getElementById("menu-btn");
+const statsButton = document.getElementById("stats-btn");
+const searchButton = document.getElementById("search-btn");
 const questionContainerElement = document.getElementById("question-container");
 const questionElement = document.getElementById("question");
 const answerButtonsElement = document.getElementById("answer-buttons");
 const nameElement = document.getElementById("name");
+const searchNameElement = document.getElementById("search-name");
 const dateElement = document.getElementById("date");
+const userLabelElement = document.getElementById("user-label");
 const chartElement = document.getElementById("chart");
+const alertDiv = document.getElementById("alert-div");
+const endGame = document.getElementById("end-game");
+const progressBar = document.getElementById("progress-bar");
+let chartUserElement = document.getElementById("myChartUser");
 const url = 'https://restcountries.com/v3.1/all?fields=name,capital,cca2,flags'
 const date = new Date();
 const formatedDate = date.toISOString().split('T')[0];
-dateElement.value = formatedDate;
+dateElement.innerText = formatedDate;
+userLabelElement.innerText = nameElement.value;
 
 let countriesData = [];
 let questions = [];
+let correctAnswers = [];
 let mark = 0;
+let progress = 0;
 let currentQuestionIndex;
 let stats = JSON.parse(localStorage.getItem('stats')) || [];
 
@@ -98,7 +110,6 @@ const apiAccess = () => {
 }
 
 const createQuestions = () => {
-  console.log(JSON.stringify(countriesData));
   countriesData.forEach(countrie => {
     let answers = [];
     for (let i = 0; i < 3; i++) {
@@ -129,14 +140,42 @@ const createUser = () => {
   localStorage.setItem("stats", JSON.stringify(stats));
 }
 
+const searchUser = () => {
+  if (chartUserElement) {
+    const chartUserParent = chartUserElement.parentElement;
+    chartUserParent.removeChild(chartUserElement);
+    chartUserElement = document.createElement("canvas");
+    chartUserElement.id = "myChartUser";
+    chartUserParent.appendChild(chartUserElement);
+  }
+  setChartUser(searchNameElement.value);
+  searchNameElement.value = searchNameElement.value;
+}
+
 const startGame = () => {
-  startButton.classList.add("hide");
-  nameElement.classList.add("hide");
-  dateElement.classList.add("hide");
-  chartElement.classList.add("hide");
+  if (nameElement.value == "" || nameElement.value == null) {
+    alertDiv.innerHTML = `<div class="alert alert-dismissible alert-danger">
+    <strong>You must enter your name!</strong>
+  </div>`
+    return;
+  }
+  progress = 0;
+  progressBar.children[0].style.width = `${progress}%`;
+  progressBar.classList.remove("d-none");
+  createQuestions();
+  correctAnswers = [];
+  alertDiv.innerHTML = "";
+  nameElement.value = nameElement.value;
+  userLabelElement.innerText = nameElement.value;
+  startButton.classList.add("d-none");
+  nameElement.classList.add("d-none");
+  dateElement.classList.add("d-none");
+  chartElement.classList.add("d-none");
+  statsButton.classList.add("d-none");
+  searchButton.classList.add("d-none");
   currentQuestionIndex = 0;
   mark = 0;
-  questionContainerElement.classList.remove("hide");
+  questionContainerElement.classList.remove("d-none");
   setNextQuestion();
 }
 
@@ -147,8 +186,10 @@ const showQuestion = (question) => {
       const buttonImg = document.createElement("img");
       const divContenedor = document.createElement('div');
       divContenedor.classList.add("g-col-8");
-      buttonImg.classList.add("btn");
-      buttonImg.classList.add("btn-secondary");
+      buttonImg.classList.add("float-start");
+      buttonImg.classList.add("rounded");
+      buttonImg.classList.add("img-thumbnail");
+      buttonImg.classList.add("shadow");
 
       buttonImg.src = question.answers[answer];
       if (question.correct_answer == question.answers[answer]) {
@@ -163,7 +204,7 @@ const showQuestion = (question) => {
 }
 
 const resetState = () => {
-  nextButton.classList.add("hide");
+  nextButton.classList.add("d-none");
   answerButtonsElement.innerHTML = "";
 }
 
@@ -185,35 +226,88 @@ const setStatusClass = (element) => {
 const selectAnswer = (event) => {
   const selectedButton = event.target;
   if (selectedButton.dataset.correct) {
+    let answer = {
+      countrie: questions[currentQuestionIndex].question,
+      correct_answer: true
+    }
+    correctAnswers.push(answer);
     mark++;
+  } else {
+    let answer = {
+      countrie: questions[currentQuestionIndex].question,
+      correct_answer: false
+    }
+    correctAnswers.push(answer);
   }
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button.children[0]);
   });
+  progress += 10;
+  progressBar.children[0].style.width = `${progress}%`;
+
   if (questions.length > currentQuestionIndex + 1) {
-    nextButton.classList.remove("hide");
+    nextButton.classList.remove("d-none");
   } else {
     createUser();
-    setChartMarks();
     setTimeout(() => {
-      startButton.innerText = "Restart";
-      startButton.classList.remove("hide");
-      nameElement.classList.remove("hide");
-      dateElement.classList.remove("hide");
-      chartElement.classList.remove("hide")
-      answerButtonsElement.innerHTML = "";
-      questionElement.innerHTML = "";
-    }, 2000);
+      progressBar.classList.add("d-none");
+      showEndGame();
+    }, 1500);
   }
 }
 
-apiAccess();
-createQuestions();
-setChartMarks();
-nameElement.addEventListener("keyup", () => setChartUser(nameElement.value));
+const showMenu = () => {
+  questionContainerElement.classList.add("d-none");
+  startButton.classList.remove("d-none");
+  nameElement.classList.remove("d-none");
+  dateElement.classList.remove("d-none");
+  statsButton.classList.remove("d-none");
+  chartElement.classList.add("d-none");
+  menuButton.classList.add("d-none");
+  searchNameElement.classList.add("d-none");
+  searchButton.classList.add("d-none");
+  endGame.classList.add("d-none");
+  alertDiv.innerHTML = "";
+}
 
+const showStats = () => {
+  questionContainerElement.classList.add("d-none");
+  startButton.classList.add("d-none");
+  nameElement.classList.add("d-none");
+  chartElement.classList.remove("d-none");
+  menuButton.classList.remove("d-none");
+  searchNameElement.classList.remove("d-none");
+  searchButton.classList.remove("d-none");
+  statsButton.classList.add("d-none");
+  alertDiv.innerHTML = "";
+  setChartMarks();
+}
+
+const showEndGame = () => {
+  answerButtonsElement.innerHTML = "";
+  questionElement.innerHTML = "";
+  menuButton.classList.remove("d-none");
+  endGame.classList.remove("d-none");
+  let index = 0;
+  Array.from(endGame.children).forEach((answerText) => {
+    if (correctAnswers[index].correct_answer) {
+      answerText.classList.add("list-group-item-success");
+      answerText.innerText = correctAnswers[index].countrie;
+    } else {
+      answerText.classList.add("list-group-item-danger");
+      answerText.innerText = correctAnswers[index].countrie;
+    }
+    index++;
+  });
+}
+
+apiAccess();
+
+searchButton.addEventListener("click", searchUser);
 startButton.addEventListener("click", startGame);
 nextButton.addEventListener("click", () => {
   currentQuestionIndex++;
   setNextQuestion();
 });
+menuButton.addEventListener("click", showMenu);
+statsButton.addEventListener("click", showStats);
