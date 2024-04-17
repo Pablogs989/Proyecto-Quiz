@@ -7,9 +7,9 @@
 
     <link rel="stylesheet" href="bootstrap.min.css" />
   </head>
-  <body class="p-5">
+  <body class="p-5 bg-warning bg-opacity-25">
     <header class="d-flex justify-content-between">
-      <h1 class="text-center">Quiz App</h1>
+      <h1 class="">Quiz App</h1>
       <div class="d-flex flex-column">
         <label id="date" class="form-label"></label>
         <label id="user-label" class="form-label"></label>
@@ -22,7 +22,14 @@
         class="d-flex flex-wrap gap-5 justify-content-center m-3"
       ></div>
       <div id="progress-bar" class="progress">
-        <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        <div
+          class="progress-bar bg-warning"
+          role="progressbar"
+          style="width: 0%"
+          aria-valuenow="25"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        ></div>
       </div>
     </div>
     <div id="user-data" class="d-flex d-grid gap-2 pt-3">
@@ -40,38 +47,52 @@
       />
     </div>
     <div id="alert-div"></div>
-    <ul id="end-game" class="list-group d-none">
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-      <li
-        class="list-group-item d-flex justify-content-between align-items-center"
-      ></li>
-    </ul>
-    <div class="controls">
-      <button id="start-btn" class="btn btn-primary">Start</button>
+    <div id="result-div" class="d-none d-flex flex-row justify-content-start align-items-stretch">
+      <ul id="answer-list" class="list-group">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        ></li>
+      </ul>
+      <div id="result-text"></div>
+    </div>
+
+    <div
+      class="d-flex flex-column justify-content-around col-lg-10 col-md-12 mt-5"
+    >
+      <button id="start-btn" class="btn btn-lg btn-primary mb-4">Start</button>
       <button id="next-btn" class="d-none btn btn-primary">Next</button>
+      <button id="search-btn" class="btn btn-primary d-none mb-4">
+        Search
+      </button>
       <button id="menu-btn" class="d-none btn btn-primary">Menu</button>
-      <button id="stats-btn" class="btn btn-primary">Stats</button>
-      <button id="search-btn" class="btn btn-primary d-none">Search</button>
+      <button id="stats-btn" class="btn btn-lg btn-primary">Stats</button>
     </div>
 
     <div id="chart" class="chartDiv d-none">

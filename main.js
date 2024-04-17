@@ -12,8 +12,10 @@ const dateElement = document.getElementById("date");
 const userLabelElement = document.getElementById("user-label");
 const chartElement = document.getElementById("chart");
 const alertDiv = document.getElementById("alert-div");
-const endGame = document.getElementById("end-game");
 const progressBar = document.getElementById("progress-bar");
+const resultDiv = document.getElementById("result-div");
+const resultsList = document.getElementById("answer-list");
+const resultsText = document.getElementById("result-text");
 let chartUserElement = document.getElementById("myChartUser");
 const url = 'https://restcountries.com/v3.1/all?fields=name,capital,cca2,flags'
 const date = new Date();
@@ -154,7 +156,7 @@ const searchUser = () => {
 
 const startGame = () => {
   if (nameElement.value == "" || nameElement.value == null) {
-    alertDiv.innerHTML = `<div class="alert alert-dismissible alert-danger">
+    alertDiv.innerHTML = `<div class="alert alert-dismissible alert-danger mt-2">
     <strong>You must enter your name!</strong>
   </div>`
     return;
@@ -169,7 +171,6 @@ const startGame = () => {
   userLabelElement.innerText = nameElement.value;
   startButton.classList.add("d-none");
   nameElement.classList.add("d-none");
-  dateElement.classList.add("d-none");
   chartElement.classList.add("d-none");
   statsButton.classList.add("d-none");
   searchButton.classList.add("d-none");
@@ -260,13 +261,12 @@ const showMenu = () => {
   questionContainerElement.classList.add("d-none");
   startButton.classList.remove("d-none");
   nameElement.classList.remove("d-none");
-  dateElement.classList.remove("d-none");
   statsButton.classList.remove("d-none");
   chartElement.classList.add("d-none");
   menuButton.classList.add("d-none");
   searchNameElement.classList.add("d-none");
   searchButton.classList.add("d-none");
-  endGame.classList.add("d-none");
+  resultDiv.classList.add("d-none");
   alertDiv.innerHTML = "";
 }
 
@@ -284,12 +284,12 @@ const showStats = () => {
 }
 
 const showEndGame = () => {
+  resultDiv.classList.remove("d-none");
   answerButtonsElement.innerHTML = "";
   questionElement.innerHTML = "";
   menuButton.classList.remove("d-none");
-  endGame.classList.remove("d-none");
   let index = 0;
-  Array.from(endGame.children).forEach((answerText) => {
+  Array.from(resultsList.children).forEach((answerText) => {
     if (correctAnswers[index].correct_answer) {
       answerText.classList.add("list-group-item-success");
       answerText.innerText = correctAnswers[index].countrie;
@@ -299,6 +299,40 @@ const showEndGame = () => {
     }
     index++;
   });
+  switch (mark) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4: resultsText.innerHTML = `<div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+      <div class="card-header"><h4 class="card-title">You got ${mark}/10</h4></div>
+      <div class="card-body">
+        <p class="card-text">Although you didn't pass the country flag guessing test this time, don't be discouraged. Use this experience as motivation to study harder and try again. With persistence and effort, success is within reach!</p>
+      </div>
+    </div>`
+      break;
+    case 5:
+    case 6:
+    case 7: resultsText.innerHTML = `<div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
+      <div class="card-header"><h4 class="card-title">You got ${mark}/10</h4></div>
+      <div class="card-body">
+        <p class="card-text">Congratulations on passing the country flag guessing test! While you've made progress, there's always room for improvement. Keep up the good work and strive for even better results next time!</p>
+      </div>
+    </div>`
+      break;
+    case 8:
+    case 9:
+    case 10: resultsText.innerHTML = `<div class="card text-white bg-success mb-3" style="max-width: 20rem;">
+      <div class="card-header"><h4 class="card-title">You got ${mark}/10</h4></div>
+      <div class="card-body">
+        <p class="card-text">Congratulations on your excellent score in the country flag guessing test! Your achievement reflects your dedication and knowledge. Well done!</p>
+      </div>
+    </div>`
+      break;
+    default:
+      break;
+  }
+
 }
 
 apiAccess();
