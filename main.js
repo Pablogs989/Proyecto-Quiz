@@ -1,4 +1,5 @@
 const startButton = document.getElementById("start-btn");
+const startCapitalsButton = document.getElementById("start-capitals-btn");
 const nextButton = document.getElementById("next-btn");
 const menuButton = document.getElementById("menu-btn");
 const statsButton = document.getElementById("stats-btn");
@@ -25,10 +26,12 @@ userLabelElement.innerText = nameElement.value;
 
 let countriesData = [];
 let questions = [];
+let questionsCapital = [];
 let correctAnswers = [];
 let mark = 0;
 let progress = 0;
 let currentQuestionIndex;
+let flagsOrCapital;
 let stats = JSON.parse(localStorage.getItem('stats')) || [];
 
 const setChartMarks = () => {
@@ -106,6 +109,7 @@ const apiAccess = () => {
   axios.get(url)
     .then((response) => {
       countriesData = response.data;
+      createQuestionsCapital();
       createQuestions();
     })
     .catch((error) => console.error(error));
@@ -131,6 +135,26 @@ const createQuestions = () => {
   questions = questions.slice(0, 10);
 }
 
+const createQuestionsCapital = () => {
+  countriesData.forEach(countrie => {
+    let answers = [];
+    for (let i = 0; i < 3; i++) {
+      let randomIndex = Math.floor(Math.random() * countriesData.length);
+      answers.push(countriesData[randomIndex].capital[0]);
+    }
+    answers.push(countrie.capital[0]);
+    answers.sort(() => Math.random() - 0.5);
+    let question = {
+      question: countrie.name.common,
+      answers: answers,
+      correct_answer: countrie.capital[0],
+    };
+    questionsCapital.push(question);
+  });
+  questionsCapital.sort(() => Math.random() - 0.5);
+  questionsCapital = questionsCapital.slice(0, 10);
+}
+
 
 const createUser = () => {
   let user = {
@@ -154,7 +178,7 @@ const searchUser = () => {
   searchNameElement.value = searchNameElement.value;
 }
 
-const startGame = () => {
+const startGame = (type) => {
   if (nameElement.value == "" || nameElement.value == null) {
     alertDiv.innerHTML = `<div class="alert alert-dismissible alert-danger mt-2">
     <strong>You must enter your name!</strong>
@@ -165,6 +189,7 @@ const startGame = () => {
   progressBar.children[0].style.width = `${progress}%`;
   progressBar.classList.remove("d-none");
   createQuestions();
+  createQuestionsCapital();
   correctAnswers = [];
   alertDiv.innerHTML = "";
   nameElement.value = nameElement.value;
@@ -174,28 +199,49 @@ const startGame = () => {
   chartElement.classList.add("d-none");
   statsButton.classList.add("d-none");
   searchButton.classList.add("d-none");
+  startCapitalsButton.classList.add("d-none");
   currentQuestionIndex = 0;
   mark = 0;
   questionContainerElement.classList.remove("d-none");
-  setNextQuestion();
+  flagsOrCapital = type;
+  setNextQuestion(flagsOrCapital);
 }
 
-const showQuestion = (question) => {
+const showQuestion = (question, flagsOrCapital) => {
   questionElement.innerText = question.question;
-  for (const answer in question.answers) {
-    if (question.answers[answer] != undefined) {
-      const buttonImg = document.createElement("img");
-      const divContenedor = document.createElement('div');
-      divContenedor.classList.add("g-col-8");
-      buttonImg.classList.add("float-start", "rounded", "img-thumbnail", "shadow");
-      buttonImg.src = question.answers[answer];
-      if (question.correct_answer == question.answers[answer]) {
-        buttonImg.dataset.correct = true;
+  if (flagsOrCapital) {
+    for (const answer in question.answers) {
+      if (question.answers[answer] != undefined) {
+        const buttonImg = document.createElement("img");
+        const divContenedor = document.createElement('div');
+        divContenedor.classList.add("g-col-8");
+        buttonImg.classList.add("float-start", "rounded", "img-thumbnail", "shadow");
+        buttonImg.src = question.answers[answer];
+        if (question.correct_answer == question.answers[answer]) {
+          buttonImg.dataset.correct = true;
+        }
+        divContenedor.appendChild(buttonImg);
+  
+        buttonImg.addEventListener("click", selectAnswer);
+        answerButtonsElement.appendChild(divContenedor);
       }
-      divContenedor.appendChild(buttonImg);
-
-      buttonImg.addEventListener("click", selectAnswer);
-      answerButtonsElement.appendChild(divContenedor);
+    }
+  }
+  if (!flagsOrCapital) {
+    for (const answer in question.answers) {
+      if (question.answers[answer] != undefined) {
+        const button = document.createElement("button");
+        const divContenedor = document.createElement('div');
+        divContenedor.classList.add("col-md-6", "mb-3");
+        button.classList.add("btn", "btn-primary", "btn-lg");
+        button.innerText = question.answers[answer];
+        if (question.correct_answer == question.answers[answer]) {
+          button.dataset.correct = true;
+        }
+        divContenedor.appendChild(button);
+        button.addEventListener("click", selectAnswer);
+        answerButtonsElement.appendChild(divContenedor);
+      }
     }
   }
 }
@@ -205,9 +251,11 @@ const resetState = () => {
   answerButtonsElement.innerHTML = "";
 }
 
-const setNextQuestion = () => {
+const setNextQuestion = (flagsOrCapital) => {
   resetState();
-  showQuestion(questions[currentQuestionIndex]);
+  if (flagsOrCapital) {
+    showQuestion(questions[currentQuestionIndex], flagsOrCapital);    
+  } else showQuestion(questionsCapital[currentQuestionIndex], flagsOrCapital);    
 }
 
 const setStatusClass = (element) => {
@@ -224,14 +272,14 @@ const selectAnswer = (event) => {
   const selectedButton = event.target;
   if (selectedButton.dataset.correct) {
     let answer = {
-      countrie: questions[currentQuestionIndex].question,
+      countrie: questionsCapital[currentQuestionIndex].question,
       correct_answer: true
     }
     correctAnswers.push(answer);
     mark++;
   } else {
     let answer = {
-      countrie: questions[currentQuestionIndex].question,
+      countrie: questionsCapital[currentQuestionIndex].question,
       correct_answer: false
     }
     correctAnswers.push(answer);
@@ -258,6 +306,7 @@ const showMenu = () => {
   startButton.classList.remove("d-none");
   nameElement.classList.remove("d-none");
   statsButton.classList.remove("d-none");
+  startCapitalsButton.classList.remove("d-none");
   chartElement.classList.add("d-none");
   menuButton.classList.add("d-none");
   searchNameElement.classList.add("d-none");
@@ -269,6 +318,7 @@ const showMenu = () => {
 const showStats = () => {
   questionContainerElement.classList.add("d-none");
   startButton.classList.add("d-none");
+  startCapitalsButton.classList.add("d-none");
   nameElement.classList.add("d-none");
   chartElement.classList.remove("d-none");
   menuButton.classList.remove("d-none");
@@ -303,7 +353,7 @@ const showEndGame = () => {
     case 4: resultsText.innerHTML = `<div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
       <div class="card-header"><h4 class="card-title">You got ${mark}/10</h4></div>
       <div class="card-body">
-        <p class="card-text">Although you didn't pass the country flag guessing test this time, don't be discouraged. Use this experience as motivation to study harder and try again. With persistence and effort, success is within reach!</p>
+        <p class="card-text">Although you didn't pass the country guessing test this time, don't be discouraged. Use this experience as motivation to study harder and try again. With persistence and effort, success is within reach!</p>
       </div>
     </div>`
       break;
@@ -312,7 +362,7 @@ const showEndGame = () => {
     case 7: resultsText.innerHTML = `<div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
       <div class="card-header"><h4 class="card-title">You got ${mark}/10</h4></div>
       <div class="card-body">
-        <p class="card-text">Congratulations on passing the country flag guessing test! While you've made progress, there's always room for improvement. Keep up the good work and strive for even better results next time!</p>
+        <p class="card-text">Congratulations on passing the country guessing test! While you've made progress, there's always room for improvement. Keep up the good work and strive for even better results next time!</p>
       </div>
     </div>`
       break;
@@ -321,7 +371,7 @@ const showEndGame = () => {
     case 10: resultsText.innerHTML = `<div class="card text-white bg-success mb-3" style="max-width: 20rem;">
       <div class="card-header"><h4 class="card-title">You got ${mark}/10</h4></div>
       <div class="card-body">
-        <p class="card-text">Congratulations on your excellent score in the country flag guessing test! Your achievement reflects your dedication and knowledge. Well done!</p>
+        <p class="card-text">Congratulations on your excellent score in the country guessing test! Your achievement reflects your dedication and knowledge. Well done!</p>
       </div>
     </div>`
       break;
@@ -334,10 +384,11 @@ const showEndGame = () => {
 apiAccess();
 
 searchButton.addEventListener("click", searchUser);
-startButton.addEventListener("click", startGame);
+startButton.addEventListener("click", () => startGame(true));
+startCapitalsButton.addEventListener("click", () => startGame(false));
 nextButton.addEventListener("click", () => {
   currentQuestionIndex++;
-  setNextQuestion();
+  setNextQuestion(flagsOrCapital);
 });
 menuButton.addEventListener("click", showMenu);
 statsButton.addEventListener("click", showStats);
