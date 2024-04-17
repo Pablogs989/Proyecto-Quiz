@@ -187,11 +187,7 @@ const showQuestion = (question) => {
       const buttonImg = document.createElement("img");
       const divContenedor = document.createElement('div');
       divContenedor.classList.add("g-col-8");
-      buttonImg.classList.add("float-start");
-      buttonImg.classList.add("rounded");
-      buttonImg.classList.add("img-thumbnail");
-      buttonImg.classList.add("shadow");
-
+      buttonImg.classList.add("float-start", "rounded", "img-thumbnail", "shadow");
       buttonImg.src = question.answers[answer];
       if (question.correct_answer == question.answers[answer]) {
         buttonImg.dataset.correct = true;

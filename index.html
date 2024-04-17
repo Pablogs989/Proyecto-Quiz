@@ -7,16 +7,16 @@
 
     <link rel="stylesheet" href="bootstrap.min.css" />
   </head>
-  <body class="p-5 bg-warning bg-opacity-25">
+  <body class="p-5 bg-warning bg-opacity-25 d-flex flex-column">
     <header class="d-flex justify-content-between">
-      <h1 class="">Quiz App</h1>
+      <h1>Quiz App</h1>
       <div class="d-flex flex-column">
         <label id="date" class="form-label"></label>
         <label id="user-label" class="form-label"></label>
       </div>
     </header>
-    <div id="question-container" class="d-none">
-      <div id="question" class="h3">Question</div>
+    <div id="question-container" class="d-none d-flex flex-column mt-4">
+      <div id="question" class="h1 align-self-center">Question</div>
       <div
         id="answer-buttons"
         class="d-flex flex-wrap gap-5 justify-content-center m-3"
@@ -47,7 +47,10 @@
       />
     </div>
     <div id="alert-div"></div>
-    <div id="result-div" class="d-none d-flex flex-row justify-content-start align-items-stretch">
+    <div
+      id="result-div"
+      class="d-none d-flex flex-row justify-content-evenly align-items-center p-3 bg-primary border rounded-3 shadow"
+    >
       <ul id="answer-list" class="list-group">
         <li
           class="list-group-item d-flex justify-content-between align-items-center"
@@ -84,13 +87,11 @@
     </div>
 
     <div
-      class="d-flex flex-column justify-content-around col-lg-10 col-md-12 mt-5"
+      class="d-flex flex-column justify-content-around col-12 col-lg-10 mt-5 align-self-center"
     >
       <button id="start-btn" class="btn btn-lg btn-primary mb-4">Start</button>
       <button id="next-btn" class="d-none btn btn-primary">Next</button>
-      <button id="search-btn" class="btn btn-primary d-none mb-4">
-        Search
-      </button>
+      <button id="search-btn" class="btn btn-primary d-none mb-4">Search</button>
       <button id="menu-btn" class="d-none btn btn-primary">Menu</button>
       <button id="stats-btn" class="btn btn-lg btn-primary">Stats</button>
     </div>
