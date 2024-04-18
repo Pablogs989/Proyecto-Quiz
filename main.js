@@ -232,7 +232,7 @@ const showQuestion = (question, flagsOrCapital) => {
       if (question.answers[answer] != undefined) {
         const button = document.createElement("button");
         const divContenedor = document.createElement('div');
-        divContenedor.classList.add("col-md-6", "mb-3");
+        divContenedor.classList.add("col-sm-4", "mb-3");
         button.classList.add("btn", "btn-primary", "btn-lg");
         button.innerText = question.answers[answer];
         if (question.correct_answer == question.answers[answer]) {
@@ -260,30 +260,46 @@ const setNextQuestion = (flagsOrCapital) => {
 
 const setStatusClass = (element) => {
   if (element.dataset.correct == "true") {
-    element.classList.add("btn");
-    element.classList.add("btn-success");
+    element.classList.add("btn", "btn-success");
   } else {
-    element.classList.add("btn");
-    element.classList.add("btn-danger");
+    element.classList.add("btn", "btn-danger");
   }
 }
 
 const selectAnswer = (event) => {
   const selectedButton = event.target;
-  if (selectedButton.dataset.correct) {
-    let answer = {
-      countrie: questionsCapital[currentQuestionIndex].question,
-      correct_answer: true
+  if (flagsOrCapital) {
+    if (selectedButton.dataset.correct) {
+      let answer = {
+        countrie: questions[currentQuestionIndex].question,
+        correct_answer: true
+      }
+      correctAnswers.push(answer);
+      mark++;
+    } else {
+      let answer = {
+        countrie: questions[currentQuestionIndex].question,
+        correct_answer: false
+      }
+      correctAnswers.push(answer);
     }
-    correctAnswers.push(answer);
-    mark++;
   } else {
-    let answer = {
-      countrie: questionsCapital[currentQuestionIndex].question,
-      correct_answer: false
+    if (selectedButton.dataset.correct) {
+      let answer = {
+        countrie: questionsCapital[currentQuestionIndex].question,
+        correct_answer: true
+      }
+      correctAnswers.push(answer);
+      mark++;
+    } else {
+      let answer = {
+        countrie: questionsCapital[currentQuestionIndex].question,
+        correct_answer: false
+      }
+      correctAnswers.push(answer);
     }
-    correctAnswers.push(answer);
   }
+  console.log(correctAnswers);
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button.children[0]);
   });
@@ -334,17 +350,20 @@ const showEndGame = () => {
   answerButtonsElement.innerHTML = "";
   questionElement.innerHTML = "";
   menuButton.classList.remove("d-none");
-  let index = 0;
-  Array.from(resultsList.children).forEach((answerText) => {
-    if (correctAnswers[index].correct_answer) {
-      answerText.classList.add("list-group-item-success");
-      answerText.innerText = correctAnswers[index].countrie;
+
+
+  correctAnswers.forEach(answer => {
+    const li = document.createElement("li");
+    if (answer.correct_answer) {
+      li.classList.add("list-group-item-success","list-group-item", "d-flex", "justify-content-between", "align-items-center");
+      li.innerText = answer.countrie;
     } else {
-      answerText.classList.add("list-group-item-danger");
-      answerText.innerText = correctAnswers[index].countrie;
+      li.classList.add("list-group-item-danger","list-group-item", "d-flex", "justify-content-between", "align-items-center");
+      li.innerText = answer.countrie;
     }
-    index++;
+    resultsList.appendChild(li);
   });
+
   switch (mark) {
     case 0:
     case 1:
