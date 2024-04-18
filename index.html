@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Proyecto Quiz</title>
+    <title>Countries Quiz</title>
 
     <link rel="stylesheet" href="bootstrap.min.css" />
   </head>
   <body class="p-5 bg-warning bg-opacity-25 d-flex flex-column">
     <header class="d-flex justify-content-between">
-      <h1>Quiz App</h1>
+      <h1>Countries Quiz</h1>
       <div class="d-flex flex-column">
         <label id="date" class="form-label"></label>
         <label id="user-label" class="form-label"></label>
@@ -49,21 +49,23 @@
     <div id="alert-div"></div>
     <div
       id="result-div"
-      class="d-none d-flex flex-row justify-content-evenly align-items-center p-3 bg-primary border rounded-3 shadow"
+      class="d-none"
     >
-      <ul id="answer-list" class="list-group">
-        
-      </ul>
+      <div id="result-cards" class="row row-cols-5"></div>
       <div id="result-text"></div>
     </div>
 
     <div
       class="d-flex flex-column justify-content-around col-12 col-lg-10 mt-5 align-self-center"
     >
-      <button id="start-btn" class="btn btn-lg btn-primary mb-4">Start</button>
-      <button id="start-capitals-btn" class="btn btn-lg btn-primary mb-4">Capitals</button>
+      <button id="start-btn" class="btn btn-lg btn-primary mb-4">Flags</button>
+      <button id="start-capitals-btn" class="btn btn-lg btn-primary mb-4">
+        Capitals
+      </button>
       <button id="next-btn" class="d-none btn btn-primary">Next</button>
-      <button id="search-btn" class="btn btn-primary d-none mb-4">Search</button>
+      <button id="search-btn" class="btn btn-primary d-none mb-4">
+        Search
+      </button>
       <button id="menu-btn" class="d-none btn btn-primary">Menu</button>
       <button id="stats-btn" class="btn btn-lg btn-primary">Stats</button>
     </div>

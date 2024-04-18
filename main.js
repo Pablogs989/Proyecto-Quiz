@@ -15,7 +15,7 @@ const chartElement = document.getElementById("chart");
 const alertDiv = document.getElementById("alert-div");
 const progressBar = document.getElementById("progress-bar");
 const resultDiv = document.getElementById("result-div");
-const resultsList = document.getElementById("answer-list");
+const resultCardDiv = document.getElementById("result-cards");
 const resultsText = document.getElementById("result-text");
 let chartUserElement = document.getElementById("myChartUser");
 const url = 'https://restcountries.com/v3.1/all?fields=name,capital,cca2,flags'
@@ -128,6 +128,8 @@ const createQuestions = () => {
       question: countrie.name.common,
       answers: answers,
       correct_answer: countrie.flags.png,
+      capital: countrie.capital[0],
+      flag: countrie.flags.png
     };
     questions.push(question);
   });
@@ -148,6 +150,8 @@ const createQuestionsCapital = () => {
       question: countrie.name.common,
       answers: answers,
       correct_answer: countrie.capital[0],
+      capital: countrie.capital[0],
+      flag: countrie.flags.png
     };
     questionsCapital.push(question);
   });
@@ -272,14 +276,18 @@ const selectAnswer = (event) => {
     if (selectedButton.dataset.correct) {
       let answer = {
         countrie: questions[currentQuestionIndex].question,
-        correct_answer: true
+        flag: questions[currentQuestionIndex].flag,
+        correct_answer: true,
+        capital: questions[currentQuestionIndex].capital
       }
       correctAnswers.push(answer);
       mark++;
     } else {
       let answer = {
         countrie: questions[currentQuestionIndex].question,
-        correct_answer: false
+        flag: questions[currentQuestionIndex].flag,
+        correct_answer: false,
+        capital: questions[currentQuestionIndex].capital
       }
       correctAnswers.push(answer);
     }
@@ -287,19 +295,22 @@ const selectAnswer = (event) => {
     if (selectedButton.dataset.correct) {
       let answer = {
         countrie: questionsCapital[currentQuestionIndex].question,
-        correct_answer: true
+        flag: questionsCapital[currentQuestionIndex].flag,
+        correct_answer: true,
+        capital: questionsCapital[currentQuestionIndex].capital
       }
       correctAnswers.push(answer);
       mark++;
     } else {
       let answer = {
         countrie: questionsCapital[currentQuestionIndex].question,
-        correct_answer: false
+        flag: questionsCapital[currentQuestionIndex].flag,
+        correct_answer: false,
+        capital: questionsCapital[currentQuestionIndex].capital
       }
       correctAnswers.push(answer);
     }
   }
-  console.log(correctAnswers);
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button.children[0]);
   });
@@ -350,19 +361,30 @@ const showEndGame = () => {
   answerButtonsElement.innerHTML = "";
   questionElement.innerHTML = "";
   menuButton.classList.remove("d-none");
+  resultCardDiv.innerHTML = "";
 
-
-  correctAnswers.forEach(answer => {
-    const li = document.createElement("li");
-    if (answer.correct_answer) {
-      li.classList.add("list-group-item-success","list-group-item", "d-flex", "justify-content-between", "align-items-center");
-      li.innerText = answer.countrie;
-    } else {
-      li.classList.add("list-group-item-danger","list-group-item", "d-flex", "justify-content-between", "align-items-center");
-      li.innerText = answer.countrie;
-    }
-    resultsList.appendChild(li);
-  });
+    correctAnswers.forEach(answer => {
+        const cardDiv = document.createElement("div");
+        cardDiv.classList.add("card", "m-3", "col");
+        const headerElement = document.createElement("h3");
+        headerElement.classList.add("card-header", "text-center");
+        headerElement.textContent = answer.countrie;
+        const imgElement = document.createElement("img");
+        imgElement.classList.add("img-fluid");
+        imgElement.src = answer.flag;
+        const footerElement = document.createElement("div");
+        footerElement.classList.add("card-footer");
+        footerElement.textContent = "Capital: " + answer.capital;
+        if (answer.correct_answer) {
+          cardDiv.classList.add("bg-success");
+        } else {
+          cardDiv.classList.add("bg-danger");
+        }
+        cardDiv.appendChild(headerElement);
+        cardDiv.appendChild(imgElement);
+        cardDiv.appendChild(footerElement);
+        resultCardDiv.appendChild(cardDiv);
+    });
 
   switch (mark) {
     case 0:
