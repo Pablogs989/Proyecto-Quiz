@@ -11,11 +11,17 @@ Este es un proyecto de quiz sobre países, desarrollado en JavaScript y utilizan
 5. Después de responder todas las preguntas, se mostrará tu puntaje y podrás ver tus resultados.
 
 ## Características Principales
-
+  ![Imagen](demo/menu.png)
 - El juego presenta preguntas aleatorias relacionadas con países y capitales.
+  ![Imagen](demo/flags.png)
 - Permite al usuario seleccionar entre jugar adivinando las banderas de los países o las capitales.
+  ![Imagen](demo/capitals.png)
 - Muestra el puntaje del usuario y las preguntas acertadas y falladas al finalizar el juego y ofrece mensajes personalizados según el desempeño.
+  ![Imagen](demo/endgame1.png)
+  ![Imagen](demo/endgame2.png)
 - Permite al usuario ver las puntuaciones de el resto de usuarios y buscar su historial de puntajes introduciendo su nombre.
+  ![Imagen](demo/stats1.png)
+  ![Imagen](demo/stats2.png)
 
 ## Tecnologías Utilizadas
 
