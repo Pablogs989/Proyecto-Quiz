@@ -109,8 +109,7 @@ const apiAccess = () => {
   axios.get(url)
     .then((response) => {
       countriesData = response.data;
-      createQuestionsCapital();
-      createQuestions();
+
     })
     .catch((error) => console.error(error));
 }
@@ -421,6 +420,7 @@ const showEndGame = () => {
   }
 
 }
+
 
 apiAccess();
 
